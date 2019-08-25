@@ -1,19 +1,22 @@
 package gui;
 
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 
 import db.DbException;
+import gui.listener.DataChangerListener;
 import gui.util.Alerts;
 import gui.util.Constraints;
 import gui.util.Utils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.control.Alert.AlertType;
 import model.entities.Department;
 import moodel.services.DepartamentListService;
 
@@ -22,6 +25,8 @@ public class DepartamentFormController implements Initializable{
 	private Department entiti;
 	
 	private DepartamentListService service;
+	
+	private List<DataChangerListener> dataChangerListeners =  new ArrayList<>();
 
 	@FXML
 	private TextField txtId;
@@ -46,6 +51,10 @@ public class DepartamentFormController implements Initializable{
 		this.service = service;
 	}
 	
+	public void subscribeDataChangerListener(DataChangerListener listener) {
+		dataChangerListeners.add(listener);
+	}
+	
 	
 	@FXML
 	public void onBtSaveAction(ActionEvent event) {
@@ -61,6 +70,7 @@ public class DepartamentFormController implements Initializable{
 			
 			entiti = getFromData();
 			service.saverOrUpdate(entiti);
+			notfyDaraChangerListener();
 			Utils.curredStage(event).close();
 			
 		}catch(DbException e) {
@@ -68,6 +78,14 @@ public class DepartamentFormController implements Initializable{
 		}
 	}
 	
+	private void notfyDaraChangerListener() {
+		
+		for(DataChangerListener listener : dataChangerListeners) {
+			listener.onDataChanger();
+		}
+		
+	}
+
 	private Department getFromData() {
 		Department obj = new Department();
 		

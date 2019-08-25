@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 import application.Main;
+import gui.listener.DataChangerListener;
 import gui.util.Alerts;
 import gui.util.Utils;
 import javafx.collections.FXCollections;
@@ -26,7 +27,7 @@ import javafx.stage.Stage;
 import model.entities.Department;
 import moodel.services.DepartamentListService;
 
-public class DepartamentListController implements Initializable{
+public class DepartamentListController implements Initializable, DataChangerListener{
 
 	private DepartamentListService service;
 	
@@ -96,6 +97,9 @@ public class DepartamentListController implements Initializable{
 			DepartamentFormController controler = loader.getController();
 			controler.setDepartament(obj);
 			controler.setDepartamentService(new DepartamentListService());
+			
+			controler.subscribeDataChangerListener(this);
+			
 			controler.updateDepartament();
 			
 			Stage dialoStage = new Stage();
@@ -112,6 +116,14 @@ public class DepartamentListController implements Initializable{
 		}catch(IOException e) {
 			Alerts.showAlerts("IO EXCEPTION", "Erro loading view", e.getMessage(), AlertType.ERROR);
 		}
+	}
+
+	@Override
+	public void onDataChanger() {
+		
+		updateTableView();
+		
+		
 	}
 
 }
