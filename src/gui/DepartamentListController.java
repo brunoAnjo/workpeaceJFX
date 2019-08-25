@@ -94,7 +94,8 @@ public class DepartamentListController implements Initializable{
 			Pane pane = loader.load();
 			
 			DepartamentFormController controler = loader.getController();
-			controler.departamentSet(obj);
+			controler.setDepartament(obj);
+			controler.setDepartamentService(new DepartamentListService());
 			controler.updateDepartament();
 			
 			Stage dialoStage = new Stage();
